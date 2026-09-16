@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Captación y Fidelización - Cafetería
 
-## Getting Started
+Bienvenido al repositorio del Sistema de Fidelización para nuestra cafetería. Este proyecto es un MVP diseñado para funcionar desde el navegador móvil del cliente sin necesidad de descargar una app.
 
-First, run the development server:
+## 🚀 Tecnologías Principales
+- **Framework:** Next.js (App Router)
+- **Estilos:** Tailwind CSS
+- **Base de Datos y Autenticación:** Supabase (PostgreSQL)
+- **Lenguaje:** TypeScript
 
+## 📦 Configuración Inicial para Colaboradores
+
+Sigue estos pasos para levantar el proyecto en tu máquina local:
+
+### 1. Clonar e Instalar Dependencias
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <url-del-repo>
+cd coffee-lynat
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Variables de Entorno (IMPORTANTE)
+Está **estrictamente prohibido** subir archivos `.env` (incluyendo `.env.example`) al repositorio por motivos de seguridad. 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Debes crear un archivo en tu computadora llamado `.env.local` en la raíz del proyecto. Las claves te las pasará un administrador del equipo de forma privada (vía mensaje). El formato del archivo debe ser:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_SUPABASE_URL=aqui_va_la_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=aqui_va_la_clave
+```
 
-## Learn More
+### 3. Base de Datos
+Todos nos conectamos a la misma base de datos remota en Supabase para el desarrollo del MVP. 
+El esquema de las tablas y políticas de seguridad (RLS) se encuentra documentado en el archivo `docs/supabase_schema.sql`.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Iniciar el Servidor
+```bash
+npm run dev
+```
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación funcionando.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗺️ Estructura del Proyecto
+- `app/(public)`: Rutas públicas. Aquí ocurre la captación de clientes (`/registro`) y la fidelización (`/tarjeta/[token]`).
+- `app/(admin)`: Rutas privadas para los empleados/administradores (Dashboard, Clientes, Recompensas). Protegidas por Supabase Auth.
+- `app/login`: Portal de inicio de sesión del personal.
+- `components/`: Componentes reutilizables categorizados por módulo (`ui/`, `qr/`, `loyalty/`).
+- `lib/supabase/`: Clientes de Supabase para Servidor y Navegador.
