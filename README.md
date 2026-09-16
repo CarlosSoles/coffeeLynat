@@ -43,5 +43,21 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la 
 - `app/(public)`: Rutas públicas. Aquí ocurre la captación de clientes (`/registro`) y la fidelización (`/tarjeta/[token]`).
 - `app/(admin)`: Rutas privadas para los empleados/administradores (Dashboard, Clientes, Recompensas). Protegidas por Supabase Auth.
 - `app/login`: Portal de inicio de sesión del personal.
-- `components/`: Componentes reutilizables categorizados por módulo (`ui/`, `qr/`, `loyalty/`).
 - `lib/supabase/`: Clientes de Supabase para Servidor y Navegador.
+
+## 🚀 Despliegue en Producción (Vercel)
+
+El proyecto está diseñado para funcionar nativamente en **Vercel** (los creadores de Next.js). Desplegarlo tomará menos de 2 minutos y será completamente gratis para este MVP.
+
+### Pasos para desplegar:
+1. Sube este proyecto (ya configurado) a tu cuenta de **GitHub**.
+2. Entra a [Vercel.com](https://vercel.com/) e inicia sesión con GitHub.
+3. Haz clic en **"Add New..." > "Project"**.
+4. Importa el repositorio de `coffee-lynat`.
+5. Abre la sección de **"Environment Variables"** antes de presionar Deploy.
+6. Añade las dos variables clave de Supabase que usas en tu `.env.local`:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+7. Presiona **Deploy**.
+
+¡Y eso es todo! En menos de un minuto tendrás tu enlace público de producción (ej. `https://coffee-lynat.vercel.app`) el cual los clientes podrán visitar directamente para registrarse, y tú podrás usar para imprimir los códigos QR definitivos.

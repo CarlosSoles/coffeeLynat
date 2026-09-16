@@ -40,6 +40,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Si es una ruta de admin (y no es el setup), verificar que tenga su negocio configurado
+  if (user && url.pathname.startsWith('/admin') && url.pathname !== '/admin/setup') {
+    const { data: publicUser } = await supabase
+      .from('users')
+      .select('business_id')
+      .eq('auth_user_id', user.id)
+      .single()
+
+    if (!publicUser?.business_id) {
+      url.pathname = '/admin/setup'
+      return NextResponse.redirect(url)
+    }
+  }
+
   // Redirigir de /login a /admin si ya tiene sesión
   if (url.pathname === '/login' && user) {
     url.pathname = '/admin/dashboard'

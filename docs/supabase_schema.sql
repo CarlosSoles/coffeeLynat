@@ -72,35 +72,13 @@ CREATE TABLE visits (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 7. rewards
-CREATE TABLE rewards (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  loyalty_program_id UUID NOT NULL REFERENCES loyalty_programs(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  description TEXT,
-  required_stamps INTEGER NOT NULL,
-  active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- 8. customer_rewards
-CREATE TABLE customer_rewards (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
-  reward_id UUID NOT NULL REFERENCES rewards(id) ON DELETE CASCADE,
-  status TEXT NOT NULL DEFAULT 'EARNED' CHECK (status IN ('EARNED', 'REDEEMED', 'EXPIRED', 'CANCELLED')),
-  earned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  redeemed_at TIMESTAMP WITH TIME ZONE,
-  redeemed_by UUID REFERENCES users(id)
-);
-
--- 9. promotions
+-- 7. promotions (ahora incluye recompensas)
 CREATE TABLE promotions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   business_id UUID NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
+  required_stamps INTEGER DEFAULT 0,
   start_date TIMESTAMP WITH TIME ZONE,
   end_date TIMESTAMP WITH TIME ZONE,
   status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'ACTIVE', 'EXPIRED', 'DISABLED')),
@@ -108,13 +86,15 @@ CREATE TABLE promotions (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- (Opcional) 10. customer_promotions (Si se vinculan directamente a clientes)
+-- 8. customer_promotions (para canjes y promos vinculadas)
 CREATE TABLE customer_promotions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
   promotion_id UUID NOT NULL REFERENCES promotions(id) ON DELETE CASCADE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(customer_id, promotion_id)
+  status TEXT NOT NULL DEFAULT 'EARNED' CHECK (status IN ('EARNED', 'REDEEMED', 'EXPIRED', 'CANCELLED')),
+  earned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  redeemed_at TIMESTAMP WITH TIME ZONE,
+  redeemed_by UUID REFERENCES users(id)
 );
 
 -- ==========================================
@@ -127,8 +107,6 @@ ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE loyalty_programs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE customer_loyalty ENABLE ROW LEVEL SECURITY;
 ALTER TABLE visits ENABLE ROW LEVEL SECURITY;
-ALTER TABLE rewards ENABLE ROW LEVEL SECURITY;
-ALTER TABLE customer_rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de ejemplo (asumiendo que el usuario logueado en supabase auth
